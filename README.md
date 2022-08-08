@@ -19,8 +19,9 @@ Visualize Steam Data in PowerBI using Python
 - Note: You will see another file called: steam_bi_steamid_guid.json in data/
     - In order to anonymize the data, all steamids are replaced with a guid
     - This file contains the actual steamids and the guids so you can de-anonymize the data after generating
-    - Each guid will be unique per steamid and are re-generated every time new data is fetched
-
+    - Each guid will be unique per steamid and are re-generated every time new data is fetched  
+- Note: If you use a custom steam url and you don't know your steamid, you can look it up with the following command:
+    - Powershell: ```curl.exe YOUR_STEAM_PROFILE_URL | Select-String -Pattern "g_rgProfileData"```
 ## Resoureces
 - [PowerBI template](templates/steam_bi.pbit)
 - [Steam API Key](https://partner.steamgames.com/doc/webapi_overview/auth)
