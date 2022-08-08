@@ -1,0 +1,6 @@
+steam:
+  steamid: ''
+  key: ''
+
+options:
+  debug: True
