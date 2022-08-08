@@ -5,7 +5,7 @@ Visualize Steam Data in PowerBI using Python
 1. Install python
     - Version used: Python 3.10.3
 2. Create python virtual environment
-    - ```python venv venv```
+    - ```python -m venv venv```
 3. Rename config.yaml.sample -> config.yaml
     - Replace steamid and key with your own values
 4. Activate python virtual environment
