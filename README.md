@@ -15,6 +15,9 @@ Visualize Steam Data in PowerBI using Python
 6. Run
     - ```python starter.py```
 7. Open templates/steam_bi.pbit to see your data
+    - You will see an error. This is normal. Go to transform -> Data Source Settings
+    - From here you can change the data source to point to the path of your data
+    - Once you're done, hit apply and your data will load
 
 - Note: You will see another file called: steam_bi_steamid_guid.json in data/
     - In order to anonymize the data, all steamids are replaced with a guid
