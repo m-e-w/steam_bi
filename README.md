@@ -31,6 +31,6 @@ Visualize Steam Data in PowerBI using Python
 - [Steam API Key](https://partner.steamgames.com/doc/webapi_overview/auth)
 
 ## Screenshots
-![Screenshot](media/screenshots/Capture_01.PNG)
-![Screenshot](media/screenshots/Capture_02.PNG)
-![Screenshot](media/screenshots/Capture_03.PNG)
+![Screenshot](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_01.PNG)
+![Screenshot](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_02.PNG)
+![Screenshot](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_03.PNG)
