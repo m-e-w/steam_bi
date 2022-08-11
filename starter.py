@@ -10,25 +10,47 @@ def main():
     # Config data
     steam = config['steam']
     options = config['options']
+    data = config['data']
 
     steam_api = SteamAPI(key=steam['key'], debug=options['debug'])
     steam_ids = [steam['steamid']]
 
     view_friends = []
-    friend_list = steam_api.get_friend_list(steamId=steam['steamid'], include_player_summaries=False)
-    if(friend_list):
-        for friend in friend_list:
-            steam_ids.append(friend['steamid'])
-        view_friends = friend_list
-
     view_gamesinuse = []
-    for steam_id in steam_ids:
-        items = []
-        items = steam_api.get_owned_games(steam_id, include_store_data=False)
-        if(items):
-            for item in items:
-                item.update({'steamid': steam_id})
-            view_gamesinuse.extend(items)
+ 
+    if(data['friends']):
+        friend_list = steam_api.get_friend_list(steamId=steam['steamid'], include_player_summaries=False)
+        if(friend_list):
+            for friend in friend_list:
+                steam_ids.append(friend['steamid'])
+            view_friends = friend_list
+
+    if(data['traverse_friends']):
+        id_list = steam_ids.copy()
+        for steam_id in id_list:
+                if(data['games']):
+                    items = []
+                    items = steam_api.get_owned_games(steam_id, include_store_data=False)
+                    if(items):
+                        for item in items:
+                            item.update({'steamid': steam_id})
+                        view_gamesinuse.extend(items)
+                # if(data['friends']):
+                #     items = []
+                #     items = steam_api.get_friend_list(steamId=steam_id, include_player_summaries=False)
+                #     if(items):
+                #         for item in items:
+                #             steam_ids.append(item['steamid'])
+                #             item.update({'friend_of': steam_id})
+                #         view_friends.extend(items)
+    else:
+        if(data['games']):
+            items = []
+            items = steam_api.get_owned_games(steam_ids[0], include_store_data=False)
+            if(items):
+                for item in items:
+                    item.update({'steamid': steam_ids[0]})
+                view_gamesinuse.extend(items)
 
     steam_helper = SteamHelper(debug=options['debug'], counter=steam_api.get_counter())
     guids = steam_helper.generate_guids(id_set=set(steam_ids))
