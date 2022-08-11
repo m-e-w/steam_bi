@@ -1,4 +1,5 @@
 from datetime import datetime
+from urllib.parse import urlencode
 import requests
 import time
 
@@ -19,9 +20,11 @@ class SteamAPI:
     def __getter(self, url: str, params: dict) -> dict:
         self.request_counter = self.request_counter + 1
         response_dict = {}
+        params_copy = params.copy()
+        params_copy.update({'key': ''})
         if(self.debug):
-            print("[%s]\t%s\tGET\t%s" %
-                  (self.request_counter, datetime.now(), url))
+            print("[%s]\t%s\tGET\t%s?%s" %
+                  (self.request_counter, datetime.now(), url, urlencode(params_copy)))
 
         response = requests.get(url=url, params=params)
 
@@ -45,7 +48,7 @@ class SteamAPI:
     # Takes a comma separated list of steamids and returns basic properties about the player(s)
     def get_player_summaries(self, steamids: str) -> list[dict]:
         items = []
-        url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/'
+        url = 'https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/'
         params = {
             'key': self.key,
             'steamids': steamids,
@@ -57,7 +60,9 @@ class SteamAPI:
         return items
 
     # Takes a steamid and returns the users list of owned games. ** (Optional): Iclude additional game store data **
-    def get_owned_games(self, steamId: str, include_store_data: bool, store_limit: int, time_to_sleep: int):
+    def get_owned_games(self, steamId: str, include_store_data: bool, **kwargs):
+        store_limit = kwargs.get('store_limit', None) 
+        time_to_sleep = kwargs.get('time_to_sleep', None)
         items = []
         url = 'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/'
         params = {
@@ -84,7 +89,7 @@ class SteamAPI:
     # Takes a steamid and returns the users list of friends. ** (Optional): Include additional player profile data **
     def get_friend_list(self, steamId: str, include_player_summaries: bool) -> list[dict]:
         items = []
-        url = 'http://api.steampowered.com/ISteamUser/GetFriendList/v0001/'
+        url = 'https://api.steampowered.com/ISteamUser/GetFriendList/v0001/'
         params = {
             'key': self.key,
             'steamid': steamId,
@@ -123,4 +128,20 @@ class SteamAPI:
 
                 item.update({'player': record})
 
+        return items
+    
+    def get_player_achievements(self, appid: str, steamId: str) -> list[dict]:
+        items = []
+        url = 'https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/'
+        params = {
+            'key': self.key,
+            'steamid': steamId,
+            'appid': appid,
+            'format': self.output_format,
+        }
+        response = self.__getter(url=url, params=params)
+
+        if(response):
+            items = response.get('playerstats').get('achievements')
+        
         return items

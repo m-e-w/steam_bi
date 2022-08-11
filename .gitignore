@@ -3,6 +3,7 @@
 **.json
 **.pwbi
 /media/screenshots/archive
+/templates/archive
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
