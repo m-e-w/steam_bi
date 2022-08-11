@@ -39,7 +39,7 @@ class SteamHelper:
             items.append(item)
         return items
 
-    def replace_values(self, source_records: list[dict], target_records: list[dict], source_key: str, target_key: str, sub_list_key: str):
+    def replace_values(self, source_records: list[dict], target_records: list[dict], source_key: str, target_key: str, **kwargs):
         """
         Replaces all values of source_key within source_records with the value of target_key from target_records
 
@@ -47,8 +47,9 @@ class SteamHelper:
         :param list[dict] target_records: The target records that are matched to
         :param str source_key: The key whose value is to be replaced
         :param str target_key: The key containing the value to use
-        :param str sub_list_key: If source_records contains another list to replace records in, specify it here
+        :param str sub_list_key: (Optional) If source_records contains another list to replace records in, specify it here
         """
+        sub_list_key = kwargs.get('sub_list_key', None)
         for record in source_records:
             match = self.find_match(records=target_records, key=source_key, value=record[source_key])
             record[source_key] = match[target_key]
