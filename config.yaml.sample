@@ -4,3 +4,8 @@ steam:
 
 options:
   debug: True
+
+data:
+  games: True
+  friends: True
+  traverse_friends: True
