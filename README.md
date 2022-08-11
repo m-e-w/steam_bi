@@ -33,8 +33,10 @@ Visualize Steam Data in PowerBI using Python
 ## Sample Output
 [Screenshots](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/)
 
-![Screenshot](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_04.PNG)
-![Screenshot](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_05.PNG)
+Template_V1
+![Template_V1](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_05.PNG)
+Template_V2
+![Template_V2](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_04.PNG)
 
 [PDF - PowerBI Export](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/pdf/PowerBI_Export.pdf)
 
