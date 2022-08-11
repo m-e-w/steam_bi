@@ -1,9 +1,6 @@
 steam:
   steamid: ''
   key: ''
-  data:
-    get_games: True
-    get_friends: False
-    traverse_friends: False
+
 options:
   debug: True
