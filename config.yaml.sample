@@ -3,9 +3,7 @@ steam:
   key: ''
 
 options:
-  debug: True
-
-data:
-  games: True
-  friends: True
+  discover_games: True
+  discover_friends: False
   traverse_friends: True
+  debug: True
