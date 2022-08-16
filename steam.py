@@ -10,21 +10,14 @@ class SteamAPI:
         self.key = key
         self.output_format = 'json'
         self.debug = debug
-        self.request_counter = 0
-
-    # Return the count of requests made
-    def get_counter(self):
-        return self.request_counter
 
     # Private method to send a GET request and return the response in JSON format
     def __getter(self, url: str, params: dict) -> dict:
-        self.request_counter = self.request_counter + 1
         response_dict = {}
         params_copy = params.copy()
         params_copy.update({'key': ''})
         if(self.debug):
-            print("[%s]\t%s\tGET\t%s?%s" %
-                  (self.request_counter, datetime.now(), url, urlencode(params_copy)))
+            print("%s\tGET\t%s?%s" %(datetime.now(), url, urlencode(params_copy)))
 
         response = requests.get(url=url, params=params)
 

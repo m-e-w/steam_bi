@@ -78,7 +78,7 @@ def main():
                     item.update({'steamid': steam_ids[0]})
                 view_gamesinuse.extend(items)
     
-    steam_helper = SteamHelper(debug=options['debug'], counter=steam_api.get_counter())
+    steam_helper = SteamHelper(debug=options['debug'])
     guids = steam_helper.generate_guids(id_set=set(steam_ids))
     users = guids.copy()
     fake = Faker()
@@ -88,12 +88,11 @@ def main():
     assert len(set(user['display_name'] for user in users)) == len(users)
 
     if(options['destination'] == 'mysql'):
-        counter = steam_helper.counter + 1
         cnx = mysql.connector.connect(host=mysql_cfg['host'], user=mysql_cfg['user'], password=mysql_cfg['password'], database=mysql_cfg['database'], connect_timeout=mysql_cfg['connect_timeout'])
         cursor = cnx.cursor(buffered=True, dictionary=True)
 
         # Query MySQL for a list of all app IDs
-        print("[%s]\t%s\tQUERY\t%s" %(counter, datetime.now(), query_game))
+        print("%s\tQUERY\t%s" %(datetime.now(), query_game))
         cursor.execute(query_game)
         rows_game = cursor.fetchall()
         game_ids = [row['app_id'] for row in rows_game]
@@ -103,28 +102,25 @@ def main():
                 'steam_id': user['steamid'],
                 'display_name': user['display_name']
             }
-            counter = counter + 1
-            print("[%s]\t%s\tINSERT\t%s -> steam_bi[user]" %(counter, datetime.now(), data_user))
+            print("%s\tINSERT\t%s -> steam_bi[user]" %(datetime.now(), data_user))
             cursor.execute(insert_user, data_user)
 
         for game in view_gamesinuse:
             if (int(game['appid']) not in game_ids):
                 game_ids.append(game['appid'])
-                counter = counter + 1
                 data_game = {
                     'app_id': game['appid'],
                     'name': game['name']
                 }
-                print("[%s]\t%s\tINSERT\t%s -> steam_bi[game]" %(counter, datetime.now(), data_game))
+                print("%s\tINSERT\t%s -> steam_bi[game]" %(datetime.now(), data_game))
                 cursor.execute(insert_game, data_game)
-            counter = counter + 1
             data_gameinuse = {
                 'playtime_forever_minutes': game.get('playtime_forever', None),
                 'playtime_2weeks_minutes': game.get('playtime_2weeks', None),
                 'steam_id': game['steamid'],
                 'app_id': game['appid']
             }
-            print("[%s]\t%s\tINSERT\t%s -> steam_bi[gameinuse]" %(counter, datetime.now(), data_gameinuse))
+            print("%s\tINSERT\t%s -> steam_bi[gameinuse]" %(datetime.now(), data_gameinuse))
             cursor.execute(insert_gameinuse, data_gameinuse)
         cnx.commit()
         cursor.close()

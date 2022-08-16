@@ -7,12 +7,9 @@ import json
 class SteamHelper:
     """
     Class to hold a few helper functions to work with the data returned from Steams API
-
-    :param str counter: Operations counter for logging
     """
-    def __init__(self, debug: bool, counter: int):
+    def __init__(self, debug: bool):
         self.debug = debug
-        self.counter = counter
 
     def find_match(self, records: list[dict], key: str, value: str):
         """
@@ -66,10 +63,9 @@ class SteamHelper:
         :param str file_path: The path to write the file
         :param list[dict] data: The list of dictionaries to be write to disk
         """
-        self.counter = self.counter + 1
         if(file_path):
             if(self.debug):
-                print("[%s]\t%s\tWRITE\t%s" % (self.counter, datetime.now(), os.path.abspath(file_path)))
+                print("%s\tWRITE\t%s" % (datetime.now(), os.path.abspath(file_path)))
 
             with open(file_path, 'w') as f:
                 json.dump(data, f)
