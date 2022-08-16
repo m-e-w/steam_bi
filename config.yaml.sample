@@ -6,4 +6,12 @@ options:
   discover_games: True
   discover_friends: False
   traverse_friends: True
+  destination: 'json'
   debug: True
+
+mysql: 
+  host: '192.168.1.0'
+  database: 'steam_bi'
+  user: ''
+  password: ''
+  connect_timeout: 180
