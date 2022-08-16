@@ -1,33 +1,49 @@
 # steam_bi
 Visualize Steam Data in PowerBI using Python
 
-# Instructions
+# Configuration
+## MySQL
+1. Install/Run MySQL
+    - For testing I use MySQL running as a docker container: https://hub.docker.com/_/mysql
+2. Create the steam_bi database
+    - I used https://dev.mysql.com/downloads/workbench/
+    - There is a create_db.sql script in the sql/ folder
+## Python Project Environment
 1. Install python
     - Version used: Python 3.10.3
 2. Create python virtual environment
     - ```python -m venv venv```
 3. Rename config.yaml.sample -> config.yaml
     - Replace steamid and key with your own values
+    - The default destination is 'json'
+    - 'mysql' can be used as an alternative destination, just fill out the values in the mysql section
 4. Activate python virtual environment
-    - If on windows: ```./venv/Scripts/activate.ps1```
+    - ```./venv/Scripts/activate```
 5. Install dependencies
     - ```pip install -r requirements.txt```
-6. Run
-    - ```python starter.py```
-7. Open templates/steam_bi.pbit to see your data
+## PowerBI Desktop
+1. Install PowerBI Desktop: https://apps.microsoft.com/store/detail/power-bi-desktop/9NTXR16HNW1T?hl=en-us&gl=US
+2. Install MySQL Connector/NET 8.0.16: 
+    - This is a direct link to the most recent version that works: https://downloads.mysql.com/archives/get/p/6/file/mysql-connector-net-8.0.16.msi
+    - This is a link where you can select the version for yourself and can see the MD5 checksums and GnuPG signatures: https://downloads.mysql.com/archives/c-net/
+# How to Run
+- Change to the project root directory and: ```python starter.py```
+- If destination == 'json' Open templates/games_v1-2_json.pbit to see your data
     - You will see an error. This is normal. Go to transform -> Data Source Settings
-    - From here you can change the data source to point to the path of your data
+    - From here you can change the data sources to point to paths of the .json files in data/
     - Once you're done, hit apply and your data will load
-
-- Note: You will see another file called: steam_bi_steamid_guid.json in data/
-    - In order to anonymize the data, all steamids are replaced with a guid
-    - This file contains the actual steamids and the guids so you can de-anonymize the data after generating
-    - Each guid will be unique per steamid and are re-generated every time new data is fetched  
-- Note: If you use a custom steam url and you don't know your steamid, you can look it up with the following command:
+    - You will see another file called: steam_bi_steamid_guid.json in data/
+        - In order to anonymize the data, all steamids are replaced with a guid
+        - This file contains the actual steamids and the guids so you can de-anonymize the data after generating
+        - Each guid will be unique per steamid and are re-generated every time new data is fetched 
+- If destination == 'mysql' Open templates/games_v2_mysql.pbit to see your data
+    - You will see an error. This is normal. Go to transform -> Data Source Settings
+    - From here you can change the data source to point to your MySQL DB
+    - Once you're done, hit apply and your data will load
+- If you use a custom steam url and you don't know your steamid, you can look it up with the following command:
     - Powershell: ```curl.exe YOUR_STEAM_PROFILE_URL | Select-String -Pattern "g_rgProfileData"```
 
 ## Resources
-- [PowerBI template](templates/steam_bi.pbit)
 - [Steam API Key](https://partner.steamgames.com/doc/webapi_overview/auth)
 
 ## Sample Output
