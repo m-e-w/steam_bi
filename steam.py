@@ -6,19 +6,15 @@ import time
 
 # Class to perform Steam API requests
 class SteamAPI:
-    def __init__(self, key, debug):
+    def __init__(self, key):
         self.key = key
         self.output_format = 'json'
-        self.debug = debug
 
     # Private method to send a GET request and return the response in JSON format
     def __getter(self, url: str, params: dict) -> dict:
         response_dict = {}
         params_copy = params.copy()
         params_copy.update({'key': ''})
-        if(self.debug):
-            print("%s\tGET\t%s?%s" %(datetime.now(), url, urlencode(params_copy)))
-
         response = requests.get(url=url, params=params)
 
         if(response.status_code == 200):
