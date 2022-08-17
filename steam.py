@@ -29,8 +29,7 @@ class SteamAPI:
         params = {
             'appids': str(appid)
         }
-        item = self.__getter(url=url, params=params).get(
-            str(appid)).get('data')
+        item = self.__getter(url=url, params=params).get(str(appid)).get('data')
 
         return item
 
@@ -43,8 +42,7 @@ class SteamAPI:
             'steamids': steamids,
             'format': self.output_format
         }
-        items = self.__getter(url=url, params=params).get(
-            'response').get('players')
+        items = self.__getter(url=url, params=params).get('response').get('players')
 
         return items
 
@@ -61,16 +59,14 @@ class SteamAPI:
             'include_appinfo': True,
             'include_played_free_games': True
         }
-        items = self.__getter(url=url, params=params).get(
-            'response').get('games')
+        items = self.__getter(url=url, params=params).get('response').get('games')
 
         if(include_store_data):
             counter = 0
             for item in items:
                 if(counter < store_limit):
                     counter = counter + 1
-                    item.update(
-                        {'app_details': self.__get_app_details(appid=item['appid'])})
+                    item.update({'app_details': self.__get_app_details(appid=item['appid'])})
                     time.sleep(time_to_sleep)
 
         return items
@@ -97,23 +93,19 @@ class SteamAPI:
             records = self.__get_player_summaries(steamids=steamids)
 
             for record in records:
-                item = next(item for item in items if item.get(
-                    'steamid') == record.get('steamid'))
+                item = next(item for item in items if item.get('steamid') == record.get('steamid'))
 
                 friend_since = item.get('friend_since')
                 if(friend_since):
-                    item.update({'friend_since': str(
-                        datetime.utcfromtimestamp(int(friend_since)))})
+                    item.update({'friend_since': str(datetime.utcfromtimestamp(int(friend_since)))})
 
                 timecreated = record.get('timecreated')
                 if(timecreated):
-                    record.update(
-                        {'timecreated': str(datetime.utcfromtimestamp(int(timecreated)))})
+                    record.update({'timecreated': str(datetime.utcfromtimestamp(int(timecreated)))})
 
                 lastlogoff = record.get('lastlogoff')
                 if(lastlogoff):
-                    record.update(
-                        {'lastlogoff': str(datetime.utcfromtimestamp(int(lastlogoff)))})
+                    record.update({'lastlogoff': str(datetime.utcfromtimestamp(int(lastlogoff)))})
 
                 item.update({'player': record})
 
