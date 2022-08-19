@@ -82,13 +82,16 @@ To see your data, check [Superset](#superset) or [PowerBI](#powerbi) for more in
 - [PowerBI Desktop](https://powerbi.microsoft.com/en-us/desktop/)
 
 ## Sample Output
-- [Screenshots](media/screenshots/)
-- [PDF - PowerBI Export](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/pdf/PowerBI_Export.pdf)
-
+### PowerBI
 Template_V1
 ![Template_V1](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_05.PNG)
 Template_V2
 ![Template_V2](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_04.PNG)
+### Superset
+Games
+![Games](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_06.PNG)
+Template_V2
+![Users](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_07.PNG)
 
 
 
