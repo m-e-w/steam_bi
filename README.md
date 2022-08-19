@@ -83,14 +83,10 @@ To see your data, check [Superset](#superset) or [PowerBI](#powerbi) for more in
 
 ## Sample Output
 ### PowerBI
-Template_V1
 ![Template_V1](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_05.PNG)
-Template_V2
 ![Template_V2](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_04.PNG)
 ### Superset
-Games
 ![Games](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_06.PNG)
-Template_V2
 ![Users](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_07.PNG)
 
 
