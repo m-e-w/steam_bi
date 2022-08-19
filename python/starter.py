@@ -5,18 +5,25 @@ from datetime import datetime
 from faker import Faker
 import yaml
 import mysql.connector
-
+import logging
 
 def main():
+    print("%s\tSTART" %(datetime.now()))
     with open('config.yaml', 'r') as cfg:
         config = yaml.safe_load(cfg)
 
     steam = config['steam']
     mysql_cfg = config['mysql']
     options = config['options']
+    debug = options['debug']
     discover_friends = options['discover_friends']
     discover_games = options['discover_games']
     traverse_friends = options['traverse_friends']
+
+    if(debug):
+        logging.basicConfig(level=logging.DEBUG, filename='steam_bi.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    else:
+        logging.basicConfig(level=logging.ERROR, filename='steam_bi.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
     insert_game = ("""
         INSERT INTO game (app_id, name) VALUES (%(app_id)s, %(name)s)
@@ -32,12 +39,13 @@ def main():
     """)
     query_game = "SELECT app_id from game"
 
-    steam_api = SteamAPI(key=steam['key'], debug=options['debug'])
+    steam_api = SteamAPI(key=steam['key'])
     steam_ids = [steam['steamid']]
 
     view_friends = []
     view_gamesinuse = []
 
+    print("%s\tGathering data from steam ..." % (datetime.now()))
     if (discover_friends or traverse_friends):
         friend_list = steam_api.get_friend_list(
             steamId=steam['steamid'], include_player_summaries=False)
@@ -78,7 +86,7 @@ def main():
                     item.update({'steamid': steam_ids[0]})
                 view_gamesinuse.extend(items)
     
-    steam_helper = SteamHelper(debug=options['debug'], counter=steam_api.get_counter())
+    steam_helper = SteamHelper(debug=options['debug'])
     guids = steam_helper.generate_guids(id_set=set(steam_ids))
     users = guids.copy()
     fake = Faker()
@@ -88,43 +96,45 @@ def main():
     assert len(set(user['display_name'] for user in users)) == len(users)
 
     if(options['destination'] == 'mysql'):
-        counter = steam_helper.counter + 1
         cnx = mysql.connector.connect(host=mysql_cfg['host'], user=mysql_cfg['user'], password=mysql_cfg['password'], database=mysql_cfg['database'], connect_timeout=mysql_cfg['connect_timeout'])
         cursor = cnx.cursor(buffered=True, dictionary=True)
 
+        print("%s\tGathering data from MySQL ..." %(datetime.now()))
         # Query MySQL for a list of all app IDs
-        print("[%s]\t%s\tQUERY\t%s" %(counter, datetime.now(), query_game))
+        if(debug):
+            logging.debug("%s\tQUERY\t%s" %(datetime.now(), query_game))
         cursor.execute(query_game)
         rows_game = cursor.fetchall()
         game_ids = [row['app_id'] for row in rows_game]
 
+        print("%s\tWriting data to MySQL ..." %(datetime.now()))
         for user in users:
             data_user = {
                 'steam_id': user['steamid'],
                 'display_name': user['display_name']
             }
-            counter = counter + 1
-            print("[%s]\t%s\tINSERT\t%s -> steam_bi[user]" %(counter, datetime.now(), data_user))
+            if(debug):
+                logging.debug("INSERT\t%s -> steam_bi[user]" %(data_user))
             cursor.execute(insert_user, data_user)
 
         for game in view_gamesinuse:
             if (int(game['appid']) not in game_ids):
                 game_ids.append(game['appid'])
-                counter = counter + 1
                 data_game = {
                     'app_id': game['appid'],
                     'name': game['name']
                 }
-                print("[%s]\t%s\tINSERT\t%s -> steam_bi[game]" %(counter, datetime.now(), data_game))
+                if(debug):
+                    logging.debug("INSERT\t%s -> steam_bi[game]" %(data_game))
                 cursor.execute(insert_game, data_game)
-            counter = counter + 1
             data_gameinuse = {
                 'playtime_forever_minutes': game.get('playtime_forever', None),
                 'playtime_2weeks_minutes': game.get('playtime_2weeks', None),
                 'steam_id': game['steamid'],
                 'app_id': game['appid']
             }
-            print("[%s]\t%s\tINSERT\t%s -> steam_bi[gameinuse]" %(counter, datetime.now(), data_gameinuse))
+            if(debug):
+                logging.debug("INSERT\t%s -> steam_bi[gameinuse]" %(data_gameinuse))
             cursor.execute(insert_gameinuse, data_gameinuse)
         cnx.commit()
         cursor.close()
@@ -145,6 +155,8 @@ def main():
         for user in users:
             user.pop('steamid')
         steam_helper.write_data(data=users, file_path='data/steam_bi_view_users.json')
+    
+    print("%s\tEND" %(datetime.now()))
 
 if __name__ == '__main__':
     main()

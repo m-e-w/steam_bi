@@ -6,26 +6,15 @@ import time
 
 # Class to perform Steam API requests
 class SteamAPI:
-    def __init__(self, key, debug):
+    def __init__(self, key):
         self.key = key
         self.output_format = 'json'
-        self.debug = debug
-        self.request_counter = 0
-
-    # Return the count of requests made
-    def get_counter(self):
-        return self.request_counter
 
     # Private method to send a GET request and return the response in JSON format
     def __getter(self, url: str, params: dict) -> dict:
-        self.request_counter = self.request_counter + 1
         response_dict = {}
         params_copy = params.copy()
         params_copy.update({'key': ''})
-        if(self.debug):
-            print("[%s]\t%s\tGET\t%s?%s" %
-                  (self.request_counter, datetime.now(), url, urlencode(params_copy)))
-
         response = requests.get(url=url, params=params)
 
         if(response.status_code == 200):
@@ -40,8 +29,7 @@ class SteamAPI:
         params = {
             'appids': str(appid)
         }
-        item = self.__getter(url=url, params=params).get(
-            str(appid)).get('data')
+        item = self.__getter(url=url, params=params).get(str(appid)).get('data')
 
         return item
 
@@ -54,8 +42,7 @@ class SteamAPI:
             'steamids': steamids,
             'format': self.output_format
         }
-        items = self.__getter(url=url, params=params).get(
-            'response').get('players')
+        items = self.__getter(url=url, params=params).get('response').get('players')
 
         return items
 
@@ -72,16 +59,14 @@ class SteamAPI:
             'include_appinfo': True,
             'include_played_free_games': True
         }
-        items = self.__getter(url=url, params=params).get(
-            'response').get('games')
+        items = self.__getter(url=url, params=params).get('response').get('games')
 
         if(include_store_data):
             counter = 0
             for item in items:
                 if(counter < store_limit):
                     counter = counter + 1
-                    item.update(
-                        {'app_details': self.__get_app_details(appid=item['appid'])})
+                    item.update({'app_details': self.__get_app_details(appid=item['appid'])})
                     time.sleep(time_to_sleep)
 
         return items
@@ -108,23 +93,19 @@ class SteamAPI:
             records = self.__get_player_summaries(steamids=steamids)
 
             for record in records:
-                item = next(item for item in items if item.get(
-                    'steamid') == record.get('steamid'))
+                item = next(item for item in items if item.get('steamid') == record.get('steamid'))
 
                 friend_since = item.get('friend_since')
                 if(friend_since):
-                    item.update({'friend_since': str(
-                        datetime.utcfromtimestamp(int(friend_since)))})
+                    item.update({'friend_since': str(datetime.utcfromtimestamp(int(friend_since)))})
 
                 timecreated = record.get('timecreated')
                 if(timecreated):
-                    record.update(
-                        {'timecreated': str(datetime.utcfromtimestamp(int(timecreated)))})
+                    record.update({'timecreated': str(datetime.utcfromtimestamp(int(timecreated)))})
 
                 lastlogoff = record.get('lastlogoff')
                 if(lastlogoff):
-                    record.update(
-                        {'lastlogoff': str(datetime.utcfromtimestamp(int(lastlogoff)))})
+                    record.update({'lastlogoff': str(datetime.utcfromtimestamp(int(lastlogoff)))})
 
                 item.update({'player': record})
 

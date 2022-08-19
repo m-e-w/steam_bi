@@ -2,8 +2,7 @@
 **.yaml
 **.json
 **.pwbi
-/media/screenshots/archive
-/templates/archive
+archive/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
