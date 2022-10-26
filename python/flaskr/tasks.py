@@ -9,10 +9,11 @@ import mysql.connector
 
 steam = SteamAPI(key=steam_key)
 fake = Faker()
+# filename='steam_bi.log', filemode='w', removing. This is no longer needed as celery/gunicorn logs will be used instead
 if(debug):
-    logging.basicConfig(level=logging.DEBUG, filename='steam_bi.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 else:
-    logging.basicConfig(level=logging.ERROR, filename='steam_bi.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.ERROR, format='%(name)s - %(levelname)s - %(message)s')
 
 
 def fetch_steam_friends(steamId, include_player_summaries, steam_ids):
