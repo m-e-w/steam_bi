@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # Change to projects python directory
-cd ~/src/steam_bi/python/flaskr/
+cd python/flaskr/
 
 # Start celery in the background
 celery -A tasks worker --loglevel=DEBUG --logfile logs/celery.log --detach
