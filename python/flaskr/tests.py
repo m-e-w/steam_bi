@@ -14,7 +14,7 @@ print(json.dumps(r.json(), indent=2))
 
 # Make a few get calls to check the status of the task.
 number_of_gets = 5
-time_to_sleep = 1
+time_to_sleep = 3
 for i in range(number_of_gets):
     time.sleep(time_to_sleep)
     task_id = r.json().get('task_id')
