@@ -32,4 +32,4 @@ Here is a brief summary of what they all do:
  - This will kill all celery / gunicorn processes. 
  
 Do note 
- - In order to run /bash/start.sh or /bash/test.sh you will need to activate your python virtual environment first (source ~/.virtual_envs/steam_bi_dev/bin/activate)
+ - In order to run /bash/start.sh or /bash/test.sh you will need to activate your python virtual environment first: ```source ~/.virtual_envs/steam_bi_dev/bin/activate```
