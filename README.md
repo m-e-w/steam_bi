@@ -1,94 +1,200 @@
 # steam_bi
-Fetch and feed data available from Steam's API to industry leading data visualization tools like [Apache Superset](https://superset.apache.org/) and [Microsoft Powerbi](https://powerbi.microsoft.com/en-us/)
+- Fetch and feed data available from Steam's API to industry leading data visualization tools like [Apache Superset](https://superset.apache.org/) and [Microsoft Powerbi](https://powerbi.microsoft.com/en-us/). 
+- There is an older legacy version [here](https://github.com/m-e-w/steam_bi_legacy) that can be used if you're looking for a simpler option. It can generate .json files that can be loaded into PowerBI dashboards.
 
-## How it Works
-1. There is a python script located in python/ that can be ran to gather data from Steam's API
-2. Steam Data can then either be written locally as .json files or can be sent to a MySQL database (recommended)
-3. Dashboards consisting of Steam data can then be interacted with either in Apache Superset or Microsoft PowerBI
+# Table of Contents
+- [Requirements](#requirements)
+    - [OS & Python](#os--python)
+    - [Backend Result Store](#backend-result-store)
+    - [Message Broker](#message-broker)
+    - [Database](#database)
+    - [Visualization](#visualization)
+    - [Steam](#steam)
+- [Installation & Testing](#installation--testing)
+- [Project Structure](#project-structure)
+    - [docs](#docs)
+    - [res](#res)
+    - [sbi-client](#sbi-client)
+    - [sbi-worker](#sbi-worker)
+    - [scripts](#scripts)
+- [Changelog](docs/change-log.md)
 
-**Note:** Although we think it is totally worth it: There is much more configuration overhead required if intending to use Apache Superset -- especially so for someone not familar with Docker or data visualization tools in general.  
+# Requirements
+- There are multiple different services used in the project including:
+    - Superset (or PowerBI)
+    - MySQl
+    - Redis
+    - RabbitMQ
+- Testing was done using docker containers for all of the above services with the exception of PowerBI as there is no docker option
+- In addition to the above, a linux OS with Python 3.10.6 should be used
+- Testing was done with Fedora Linux 36 (Server Edition) and Python 3.10.6
 
-## How to Get Started
-### Python
-1. Install python
-    - Version used: Python 3.10.3
-2. Create python virtual environment
-    - ```python -m venv venv```
-3. Rename config.yaml.sample -> config.yaml
-    - Replace steamid and key with your own values
-    - The default destination is 'json'
-    - 'mysql' can be used as an alternative destination, just fill out the values in the mysql section
-4. Activate python virtual environment
-    - ```./venv/Scripts/activate```
-5. Install dependencies
-    - ```pip install -r requirements.txt```
+## OS & Python
+- Any linux OS with Python 3.10.6 or higher
+- This is required to run the python worker
 
--- If you're not intending to use MySQL or Superset, you can move on to [How to Run](#how-to-run) otherwise continue below to [MySQL](#mysql)
+## Backend Result Store
+- We may explore adding support for additional backends / result stores for celery but for now Redis is the only supported backend
+
+### Redis
+- You will need an intance of Redis for celery to use as the backend result store
+- Testing was done using Redis running as a docker container: https://hub.docker.com/_/redis
+
+## Message Broker
+- We may explore adding support for additional brokers for celery but for now RabbitMQ is the only supported broker
+
+### RabbitMQ
+- You will need an instance of RabbitMQ to use as the message broker for celery
+- Testing was done using RabbitMQ running as a docker container: https://hub.docker.com/_/rabbitmq
+
+## Database
+- We may explore adding support for additional databases down the road but for now MySQL is the only supported DB
 
 ### MySQL
-1. Install/Run MySQL
-    - For testing I use MySQL running as a docker container: https://hub.docker.com/_/mysql
-2. Create the steam_bi database
-    - I used https://dev.mysql.com/downloads/workbench/
-    - There is a create_db.sql script in the sql/ folder
+- You will need a MySQL database to store the data retrieved from Steam's API
+- A database schema script is provided in db/
+- Testing was done using MySQL running as a docker container: https://hub.docker.com/_/mysql
+- You can use: https://dev.mysql.com/downloads/workbench/ to connect and execute the provided database schema script
 
--- If you're not intending to use Superset, you can move on to [How to Run](#how-to-run) otherwise continue below to [Superset](#superset)  
+## Visualization
+- You can use any data visualization software that can connect to MySQL
+- Testing was done with Apache Superset and Microsoft PowerBI
+- Sample PowerBI dashboards are included (Apache Superset tbd pending testing importing/exporting between Superset environments)
 
 ### Superset
-1. Install/Run Superset
-    - https://superset.apache.org/docs/installation/installing-superset-using-docker-compose
-2. Run the [python](#how-to-run) script
-3. Connect to MySQL DB
-    - https://superset.apache.org/docs/databases/mysql
-4. Create a dashboard (working on supplying one in the repos)
-    - https://superset.apache.org/docs/creating-charts-dashboards/creating-your-first-dashboard
-    
+- You can use any Superset environment
+- Testing was done using a Superset docker container stack deployed via docker-compose: https://superset.apache.org/docs/installation/installing-superset-using-docker-compose
+- You will need to connect Superset to MySQL: https://superset.apache.org/docs/databases/mysql
+
 ### PowerBI
-1. Install PowerBI Desktop: https://apps.microsoft.com/store/detail/power-bi-desktop/9NTXR16HNW1T?hl=en-us&gl=US
-2. Install MySQL Connector/NET 8.0.16: 
-    - This is a direct link to the most recent version that works: https://downloads.mysql.com/archives/get/p/6/file/mysql-connector-net-8.0.16.msi
-    - This is a link where you can select the version for yourself and can see the MD5 checksums and GnuPG signatures: https://downloads.mysql.com/archives/c-net/
-3. Run the [python](#how-to-run) script
+- You can use PowerBI desktop or PowerBI Service
+- Testing was done using PowerBI Desktop: https://apps.microsoft.com/store/detail/power-bi-desktop/9NTXR16HNW1T?hl=en-us&gl=US
+- You will need to connect PowerBI to MySQL
+    - Install MySQL Connector/NET 8.0.16
+        - This is a direct link to the most recent version that works: https://downloads.mysql.com/archives/get/p/6/file/mysql-connector-net-8.0.16.msi
+        - This is a link where you can select the version for yourself and can see the MD5 checksums and GnuPG signatures: https://downloads.mysql.com/archives/c-net/
+- There are sample dashboards in etc/viz/powerbi/dashboards/
+    - Open games_v2_mysql.pbit to see your data if you are using MySQL
+        - You will see an error. This is normal. Go to transform -> Data Source Settings
+        - From here you can change the data source to point to your MySQL DB
+        - Once you're done, hit apply and your data will load
+    - [Legacy](https://github.com/m-e-w/steam_bi_legacy) Open games_v1-2_json.pbit to see your data if you are using the legacy script
+        - You will see an error. This is normal. Go to transform -> Data Source Settings
+        - From here you can change the data sources to point to paths of the .json files in data/
+        - Once you're done, hit apply and your data will load
 
-- If destination == 'json' Open templates/games_v1-2_json.pbit to see your data
-    - You will see an error. This is normal. Go to transform -> Data Source Settings
-    - From here you can change the data sources to point to paths of the .json files in data/
-    - Once you're done, hit apply and your data will load
-    - You will see another file called: steam_bi_steamid_guid.json in data/
-        - In order to anonymize the data, all steamids are replaced with a guid
-        - This file contains the actual steamids and the guids so you can de-anonymize the data after generating
-        - Each guid will be unique per steamid and are re-generated every time new data is fetched 
-- If destination == 'mysql' Open templates/games_v2_mysql.pbit to see your data
-    - You will see an error. This is normal. Go to transform -> Data Source Settings
-    - From here you can change the data source to point to your MySQL DB
-    - Once you're done, hit apply and your data will load
-- If you use a custom steam url and you don't know your steamid, you can look it up with the following command:
-    - Powershell: ```curl.exe YOUR_STEAM_PROFILE_URL | Select-String -Pattern "g_rgProfileData"``
+## Steam
+- You will need a [Steam API Key](https://partner.steamgames.com/doc/webapi_overview/auth)
+- You will need to know your steam id
+    - If you use a custom steam url and you don't know your steamid, you can look it up with the following command:
+        - Powershell: ```curl.exe YOUR_STEAM_PROFILE_URL | Select-String -Pattern "g_rgProfileData"```
 
-## How to Run
-Change to python/ then:
-```
-python starter.py
-```
+# Installation & Testing
+- Deploy (at minimum) MySQL (schmea script provided), Redis, RabbitMQ
+- Install Python 3.10.6 on any modern linux OS
+- run ./scripts/worker-setup.sh
+- rename sbi-worker/env.py.example -> env.py and fill it in with your own values
+- run ./scripts/worker-start.sh to start the worker
+- run ./scripts/worker-check.sh to check for the worker related processes to confirm they started
+- run ./scripts/worker-test.sh passing a steam id as an argument e.g. ./scripts/worker-test.sh some_steam_id
+    - You should see something similiar to the following:
+        ```
+        {
+        "task_id": "196584b0-93fa-4625-bba2-fd9973a6d950",
+        "task_result": null,
+        "task_status": "PENDING"
+        }
+        {
+        "task_id": "196584b0-93fa-4625-bba2-fd9973a6d950",
+        "task_result": null,
+        "task_status": "PENDING"
+        }
+        {
+        "task_id": "196584b0-93fa-4625-bba2-fd9973a6d950",
+        "task_result": null,
+        "task_status": "PENDING"
+        }
+        {
+        "task_id": "196584b0-93fa-4625-bba2-fd9973a6d950",
+        "task_result": null,
+        "task_status": "PENDING"
+        }
+        {
+        "task_id": "196584b0-93fa-4625-bba2-fd9973a6d950",
+        "task_result": {
+            "game": 0,
+            "gameinuse": 4033,
+            "user": 28
+        },
+        "task_status": "SUCCESS"
+        }
+        {
+        "task_id": "196584b0-93fa-4625-bba2-fd9973a6d950",
+        "task_result": {
+            "game": 0,
+            "gameinuse": 4033,
+            "user": 28
+        },
+        "task_status": "SUCCESS"
+        }
+        ```
+    - Basically, the test enqueues a task to discover all the games of the given user and the users friends. It then checks the status of the task every 3 seconds for a total of 5 times. This is completely arbitrary (in testing this task took on average 12 seconds so I just wanted it to poll long enough to see it complete)
+- If you run into any issues/erors, check the celery / gunicorn logs in sbi-worker/logs
+- Assuming everything worked as expected, you should see data has been written to MySQL. At this point you can connect with Superset and start building dashboards or connect with PowerBI and use the example dash supplied. We are working on making a Superset dashboard available pending testing of exporting/importing.
 
-To see your data, check [Superset](#superset) or [PowerBI](#powerbi) for more information.
+# Project Structure
 
-## Resources
-- [Steam API Key](https://partner.steamgames.com/doc/webapi_overview/auth)
-- [Docker](https://docs.docker.com/engine/install/)
-- [Apache Superset](https://superset.apache.org/docs/intro)
-- [MySQL Docker](https://hub.docker.com/_/mysql)
-- [MySQL Workbench](https://www.mysql.com/products/workbench/)
-- [PowerBI Desktop](https://powerbi.microsoft.com/en-us/desktop/)
+## docs
+- All documentation not included within this README is located here
+- At the moment, all that is there is the changelog but we may add additional resources over time
 
-## Sample Output
-### PowerBI
-![Template_V1](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_05.PNG)
-![Template_V2](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_04.PNG)
-### Superset
-![Games](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_06.PNG)
-![Users](https://raw.githubusercontent.com/m-e-w/steam_bi/main/media/screenshots/Capture_07.PNG)
+## res
+- All static resources are located here. Examples include:
+    - Templated dashboards for data visualization software (PowerBI, Superset TBD)
+    - Screenshots and other sample exports
 
+## sbi-client
+- Placeholder directory for all front-end related project resources
 
+## sbi-worker
+- Python backend 'worker'. This is what does the 'heavy lifting' so to speak. All code for the worker is found here. 
 
+### Components
+- Flask
+    - Flask is used to provide a responsive micro API framework so that the clients can enqueue tasks and check their status
+- Celery
+    - Celery is asynchronous task queue 
+    - It is used because there can be a lot of requests sent to Steam's API the total # of request may vary by the # of friends a given user has or options used. This can mean some tasks may take longer to execute than others
+    - In my testing, it takes about ~ 12 seconds to gather data on ~ 28 users.
+- Gunicorn
+    - Gunicorn is a Pyhon WSGI HTTP server
+    - It is used to run Flask
+- Redis (Not included)
+    - Redis is the result store used by the celery worker
+- RabbitMQ (Not included)
+    - RabbitMQ is the message borker used by the celery worker
 
+## scripts
+- Scripts to help automate project setup / testing
+- **PLEASE NOTE**: At the moment, any included bash scripts (.sh extension) should **ONLY** be run from the **ROOT** project directory as relative paths are used. e.g. ```./scripts/worker-setup.sh``` 
+
+### create_table.sql 
+- Create Database .sql script that can be used to create the required schema in MySQL
+
+### worker-setup.sh
+ - Creates a .virtual_envs directory in the current users home directory
+ - Creates a new python virtual environment for the worker in that directory
+ - It will then activate the environment, update pip, and install all required python packges found in sbi-worker/requirements.txt
+
+### worker-start.sh
+ - Starts all required worker processes: [celery, gunicorn(flask)] in the background 
+ - Their logs can be found in sbi-worker/logs
+
+### worker-check.sh
+ - This will check to see if there are any worker related processes running (gunicorn / celery)
+
+### worker-test.sh
+ - This will call a simple tests.py file to enqueue a task for the worker and check its status
+
+### worker-stop.sh
+ - This will kill all worker related processes (gunicorn / celery)

@@ -3,7 +3,7 @@
 # Takes a steam ID as a CLI argument
 
 # Change to projects python directory
-cd python/flaskr/
+cd sbi-worker
 
 # Run our python tests
-python tests.py $1
+~/.virtual_envs/steam_bi_dev/bin/python3 tests.py $1
