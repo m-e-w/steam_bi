@@ -46,6 +46,7 @@ Dashboard created with Microsoft Power BI
 ### Redis
 - You will need an intance of Redis for celery to use as the backend result store
 - Testing was done using Redis running as a docker container: https://hub.docker.com/_/redis
+- Version: 7.0.4
 
 ## Message Broker
 - We may explore adding support for additional brokers for celery but for now RabbitMQ is the only supported broker
@@ -53,6 +54,7 @@ Dashboard created with Microsoft Power BI
 ### RabbitMQ
 - You will need an instance of RabbitMQ to use as the message broker for celery
 - Testing was done using RabbitMQ running as a docker container: https://hub.docker.com/_/rabbitmq
+- Version: 3.10.7
 
 ## Database
 - We may explore adding support for additional databases down the road but for now MySQL is the only supported DB
@@ -61,6 +63,7 @@ Dashboard created with Microsoft Power BI
 - You will need a MySQL database to store the data retrieved from Steam's API
 - A database schema script is provided in db/
 - Testing was done using MySQL running as a docker container: https://hub.docker.com/_/mysql
+- Version: 8.0.30
 - You can use: https://dev.mysql.com/downloads/workbench/ to connect and execute the provided database schema script
 
 ## Visualization
@@ -152,8 +155,7 @@ Dashboard created with Microsoft Power BI
 # Project Structure
 
 ## docs
-- All documentation not included within this README is located here
-- At the moment, all that is there is the changelog but we may add additional resources over time
+- All documentation not included directly within this README is located here
 
 ## res
 - All static resources are located here. Examples include:
