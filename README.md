@@ -158,9 +158,6 @@ Dashboard created with Microsoft Power BI
     - Templated dashboards for data visualization software (Power BI, Superset TBD)
     - Screenshots and other sample exports
 
-## sbi-client
-- Placeholder directory for all front-end related project resources
-
 ## sbi-worker
 - Python backend 'worker'. This is what does the 'heavy lifting' so to speak. All code for the worker is found here. 
 

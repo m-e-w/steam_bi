@@ -5,6 +5,7 @@
 archive/
 tests/
 env.py
+sbi-client/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
