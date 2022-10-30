@@ -14,7 +14,6 @@
 - [Project Structure](#project-structure)
     - [docs](#docs)
     - [res](#res)
-    - [sbi-client](#sbi-client)
     - [sbi-worker](#sbi-worker)
     - [scripts](#scripts)
 - [Changelog](docs/change-log.md)
