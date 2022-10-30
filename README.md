@@ -1,6 +1,6 @@
 # steam_bi
-- Fetch and feed data available from Steam's API to industry leading data visualization tools like [Apache Superset](https://superset.apache.org/) and [Microsoft Powerbi](https://powerbi.microsoft.com/en-us/). 
-- There is an older legacy version [here](https://github.com/m-e-w/steam_bi_legacy) that can be used if you're looking for a simpler option. It can generate .json files that can be loaded into PowerBI dashboards.
+- Fetch and feed data available from Steam's API to industry leading data visualization tools like [Apache Superset](https://superset.apache.org/) and [Microsoft Power BI](https://powerbi.microsoft.com/en-us/). 
+- There is an older legacy version [here](https://github.com/m-e-w/steam_bi_legacy) that can be used if you're looking for a simpler option. It can generate .json files that can be loaded into Power BI dashboards.
 
 # Table of Contents
 - [Requirements](#requirements)
@@ -19,13 +19,19 @@
     - [scripts](#scripts)
 - [Changelog](docs/change-log.md)
 
+Dashboard created with Apache Superset
+![](res/media/screenshots/superset_V1.01.00.png)
+
+Dashboard created with Microsoft Power BI
+![](res/media/screenshots/powerbi_V1.01.00.PNG)
+
 # Requirements
 - There are multiple different services used in the project including:
-    - Superset (or PowerBI)
+    - Superset (or Power BI)
     - MySQl
     - Redis
     - RabbitMQ
-- Testing was done using docker containers for all of the above services with the exception of PowerBI as there is no docker option
+- Testing was done using docker containers for all of the above services with the exception of Power BI as there is no docker option
 - In addition to the above, a linux OS with Python 3.10.6 should be used
 - Testing was done with Fedora Linux 36 (Server Edition) and Python 3.10.6
 
@@ -58,18 +64,18 @@
 
 ## Visualization
 - You can use any data visualization software that can connect to MySQL
-- Testing was done with Apache Superset and Microsoft PowerBI
-- Sample PowerBI dashboards are included (Apache Superset tbd pending testing importing/exporting between Superset environments)
+- Testing was done with Apache Superset and Microsoft Power BI
+- Sample Power BI dashboards are included (Apache Superset tbd pending testing importing/exporting between Superset environments)
 
 ### Superset
 - You can use any Superset environment
 - Testing was done using a Superset docker container stack deployed via docker-compose: https://superset.apache.org/docs/installation/installing-superset-using-docker-compose
 - You will need to connect Superset to MySQL: https://superset.apache.org/docs/databases/mysql
 
-### PowerBI
-- You can use PowerBI desktop or PowerBI Service
-- Testing was done using PowerBI Desktop: https://apps.microsoft.com/store/detail/power-bi-desktop/9NTXR16HNW1T?hl=en-us&gl=US
-- You will need to connect PowerBI to MySQL
+### Power BI
+- You can use Power BI desktop or Power BI Service
+- Testing was done using Power BI Desktop: https://apps.microsoft.com/store/detail/power-bi-desktop/9NTXR16HNW1T?hl=en-us&gl=US
+- You will need to connect Power BI to MySQL
     - Install MySQL Connector/NET 8.0.16
         - This is a direct link to the most recent version that works: https://downloads.mysql.com/archives/get/p/6/file/mysql-connector-net-8.0.16.msi
         - This is a link where you can select the version for yourself and can see the MD5 checksums and GnuPG signatures: https://downloads.mysql.com/archives/c-net/
@@ -140,7 +146,7 @@
         ```
     - Basically, the test enqueues a task to discover all the games of the given user and the users friends. It then checks the status of the task every 3 seconds for a total of 5 times. This is completely arbitrary (in testing this task took on average 12 seconds so I just wanted it to poll long enough to see it complete)
 - If you run into any issues/erors, check the celery / gunicorn logs in sbi-worker/logs
-- Assuming everything worked as expected, you should see data has been written to MySQL. At this point you can connect with Superset and start building dashboards or connect with PowerBI and use the example dash supplied. We are working on making a Superset dashboard available pending testing of exporting/importing.
+- Assuming everything worked as expected, you should see data has been written to MySQL. At this point you can connect with Superset and start building dashboards or connect with Power BI and use the example dash supplied. We are working on making a Superset dashboard available pending testing of exporting/importing.
 
 # Project Structure
 
@@ -150,7 +156,7 @@
 
 ## res
 - All static resources are located here. Examples include:
-    - Templated dashboards for data visualization software (PowerBI, Superset TBD)
+    - Templated dashboards for data visualization software (Power BI, Superset TBD)
     - Screenshots and other sample exports
 
 ## sbi-client
