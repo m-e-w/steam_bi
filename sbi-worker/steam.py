@@ -59,7 +59,10 @@ class SteamAPI:
             'include_appinfo': True,
             'include_played_free_games': True
         }
-        items = self.__getter(url=url, params=params).get('response').get('games')
+
+        response = self.__getter(url=url, params=params)
+        if (response):
+            items = response.get('response').get('games')
 
         if(include_store_data):
             counter = 0
