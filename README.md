@@ -61,7 +61,7 @@ Dashboard created with Microsoft Power BI
 
 ### MySQL
 - You will need a MySQL database to store the data retrieved from Steam's API
-- A database schema script is provided in db/
+- A database schema script is provided in scripts/
 - Testing was done using MySQL running as a docker container: https://hub.docker.com/_/mysql
 - Version: 8.0.30
 - You can use: https://dev.mysql.com/downloads/workbench/ to connect and execute the provided database schema script
@@ -83,14 +83,10 @@ Dashboard created with Microsoft Power BI
     - Install MySQL Connector/NET 8.0.16
         - This is a direct link to the most recent version that works: https://downloads.mysql.com/archives/get/p/6/file/mysql-connector-net-8.0.16.msi
         - This is a link where you can select the version for yourself and can see the MD5 checksums and GnuPG signatures: https://downloads.mysql.com/archives/c-net/
-- There are sample dashboards in res/viz/powerbi/dashboards/
-    - Open games_v2_mysql.pbit to see your data if you are using MySQL
+- There is a sample dashboard in res/viz/powerbi/dashboards/
+    - Open games_v2_mysql.pbit to see your data
         - You will see an error. This is normal. Go to transform -> Data Source Settings
         - From here you can change the data source to point to your MySQL DB
-        - Once you're done, hit apply and your data will load
-    - [Legacy](https://github.com/m-e-w/steam_bi_legacy) Open games_v1-2_json.pbit to see your data if you are using the legacy script
-        - You will see an error. This is normal. Go to transform -> Data Source Settings
-        - From here you can change the data sources to point to paths of the .json files in data/
         - Once you're done, hit apply and your data will load
 
 ## Steam
@@ -181,7 +177,7 @@ Dashboard created with Microsoft Power BI
 - Redis (Not included)
     - Redis is the result store used by the celery worker
 - RabbitMQ (Not included)
-    - RabbitMQ is the message borker used by the celery worker
+    - RabbitMQ is the message broker used by the celery worker
 
 ## scripts
 - Scripts to help automate project setup / testing
