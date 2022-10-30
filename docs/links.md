@@ -1,0 +1,8 @@
+- [Apache Superset](https://superset.apache.org/docs/intro)
+    - [Creating Your First Dashboard](https://superset.apache.org/docs/creating-charts-dashboards/creating-your-first-dashboard)
+- [Docker](https://docs.docker.com/engine/install/)
+- [MySQL](https://dev.mysql.com/doc/refman/8.0/en/)
+    - [MySQL Docker](https://hub.docker.com/_/mysql)
+    - [MySQL Workbench](https://www.mysql.com/products/workbench/)
+- [Power BI Desktop](https://powerbi.microsoft.com/en-us/desktop/)
+- [Steam API Key](https://partner.steamgames.com/doc/webapi_overview/auth)
