@@ -202,6 +202,9 @@ Dashboard created with Microsoft Power BI
 ### worker-check.sh
  - This will check to see if there are any worker related processes running (gunicorn / celery)
 
+### worker-clear_logs.sh
+ - This will clear all celery / gunicorn log files
+
 ### worker-test.sh
  - This will call a simple tests.py file to enqueue a task for the worker and check its status
 
