@@ -73,7 +73,7 @@
     - Install MySQL Connector/NET 8.0.16
         - This is a direct link to the most recent version that works: https://downloads.mysql.com/archives/get/p/6/file/mysql-connector-net-8.0.16.msi
         - This is a link where you can select the version for yourself and can see the MD5 checksums and GnuPG signatures: https://downloads.mysql.com/archives/c-net/
-- There are sample dashboards in etc/viz/powerbi/dashboards/
+- There are sample dashboards in res/viz/powerbi/dashboards/
     - Open games_v2_mysql.pbit to see your data if you are using MySQL
         - You will see an error. This is normal. Go to transform -> Data Source Settings
         - From here you can change the data source to point to your MySQL DB
@@ -92,11 +92,11 @@
 # Installation & Testing
 - Deploy (at minimum) MySQL (schmea script provided), Redis, RabbitMQ
 - Install Python 3.10.6 on any modern linux OS
-- run ./scripts/worker-setup.sh
+- run /scripts/worker-setup.sh
 - rename sbi-worker/env.py.example -> env.py and fill it in with your own values
-- run ./scripts/worker-start.sh to start the worker
-- run ./scripts/worker-check.sh to check for the worker related processes to confirm they started
-- run ./scripts/worker-test.sh passing a steam id as an argument e.g. ./scripts/worker-test.sh some_steam_id
+- run /scripts/worker-start.sh to start the worker
+- run /scripts/worker-check.sh to check for the worker related processes to confirm they started
+- run /scripts/worker-test.sh passing a steam id as an argument e.g. ./scripts/worker-test.sh some_steam_id
     - You should see something similiar to the following:
         ```
         {
