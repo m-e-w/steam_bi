@@ -1,5 +1,5 @@
 #from celery.result import AsyncResult
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from tasks import task_steam
 
 app = Flask(__name__)
@@ -18,6 +18,12 @@ def get_steam_task_status(task_id):
 def create_steam_task():
     data = request.json
     steamid = data.get('steamid')
+
+    if(steamid.isnumeric() and len(steamid) == 17):
+        pass
+    else:
+        return jsonify({"Error": "Non 64 Bit Steam ID Supplied"}), 422
+    
     discover_friends = data.get('discover_friends')
     discover_games = data.get('discover_games')
     traverse_friends = data.get('traverse_friends')
