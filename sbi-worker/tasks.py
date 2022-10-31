@@ -53,7 +53,17 @@ def task_steam(steamid, discover_friends, discover_games, traverse_friends):
     friend_records = []
     gameinuse_records = []
 
-    print("%s\tGathering data from steam ..." % (datetime.now()))
+    print("Attempting to validate Steam ID: %s" % (steamid))
+    players = steam.get_player_summaries(steamids=steamid)
+
+    if(players):
+        print("Steam ID: Valid. Progressing")
+    else:
+        error_message = "Failed to validate Steam ID"
+        print(error_message)
+        return {'msg': error_message}
+
+    print("Gathering data from steam ...)")
 
     if (discover_friends or traverse_friends):
         friends = fetch_steam_friends(steamId=steamid, include_player_summaries=False, steam_ids=steam_ids)
