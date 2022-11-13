@@ -1,0 +1,36 @@
+services:
+  sbi-db:
+    image: mysql
+    container_name: sbi-mysql
+    volumes:
+       - "./scripts/sql:/docker-entrypoint-initdb.d"
+       - "~/mysql:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_DATABASE: steam_bi
+      MYSQL_ROOT_PASSWORD: steam_bi
+    ports:
+      - '3306:3306'
+  sbi-result:
+    image: redis
+    container_name: sbi-redis
+    restart: always
+  sbi-broker:
+    image: rabbitmq
+    container_name: sbi-rabbitmq
+    hostname: sbi-rabbitmq
+    restart: always
+  sbi-celery:
+    image: steambi/worker
+    build: ./sbi-worker
+    container_name: sbi-worker
+    restart: always
+    command: "celery -A tasks worker --loglevel=DEBUG"
+  sbi-flask:
+    image: steambi/worker
+    build: ./sbi-worker
+    container_name: sbi-app
+    restart: always
+    command: "gunicorn -w 1 'wsgi:app' --log-level DEBUG --bind=0.0.0.0"
+    ports:
+      - '8000:8000'

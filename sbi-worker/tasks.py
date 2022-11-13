@@ -44,7 +44,7 @@ def get_steam_users(steam_ids):
         users.append(user)
     return users
 
-app = Celery('tasks', backend='redis://localhost:6379', broker='pyamqp://guest@localhost//')
+app = Celery('tasks', backend='redis://' + redis_host + ':6379', broker='pyamqp://guest@' + rabbitmq_host + '//')
 
 @app.task
 def task_steam(steamid, discover_friends, discover_games, traverse_friends):
