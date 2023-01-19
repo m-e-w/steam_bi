@@ -4,7 +4,7 @@ services:
     container_name: sbi-mysql
     volumes:
        - "./scripts/sql:/docker-entrypoint-initdb.d"
-       - "~/mysql:/var/lib/mysql"
+       - "~/mysql/steam_bi:/var/lib/mysql"
     restart: always
     environment:
       MYSQL_DATABASE: steam_bi
