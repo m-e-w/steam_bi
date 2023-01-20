@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - .:/client
+    ports:
+      - 3000:3000
+    image: app:react
+    container_name: react_container
+    command: npm start
