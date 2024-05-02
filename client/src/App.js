@@ -1,12 +1,12 @@
 import React from "react";
 import './App.css';
-import SteamIDForm from "./components/SteamIDForm";
+import Home from './pages/Home.js'
 
 function App() {
 
   return (
     <div className="App">
-      <SteamIDForm></SteamIDForm>
+      <Home></Home>
     </div>
   );
 }
