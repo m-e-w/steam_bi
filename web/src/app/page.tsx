@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Card className="w-[350px]">
+      <Card className="m-auto">
         <CardHeader>
           <CardTitle>Enter your Steam ID</CardTitle>
           <CardDescription>
