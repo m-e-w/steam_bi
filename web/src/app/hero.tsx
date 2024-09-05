@@ -24,7 +24,6 @@ export default function Hero() {
               <Button type="submit">Submit</Button>
             </form>
           </div>
-
         </div>
       </div>
     </section>
