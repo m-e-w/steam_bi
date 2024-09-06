@@ -1,40 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { SunIcon } from "lucide-react";
 import { MoonIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "../../context/theme-context";
 
 export function Darkmode() {
-  const [theme, setTheme] = useState("light");
-
-  const toggleTheme = () => {
-    if (theme === "light") {
-      setTheme("dark");
-      window.localStorage.setItem("theme", "dark");
-      document.documentElement.classList.add("dark");
-    } else {
-      setTheme("light");
-      window.localStorage.setItem("theme", "light");
-      document.documentElement.classList.remove("dark");
-    }
-  };
-
-  useEffect(() => {
-    const localTheme = window.localStorage.getItem("theme");
-
-    if (localTheme) {
-      setTheme(localTheme);
-
-      if (localTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      }
-    } else if (window.matchMedia("(prefers-color-scheme: dark").matches) {
-      setTheme("dark");
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
+const {theme, toggleTheme} =  useTheme();
   return (
     <Button variant="outline" size="icon" onClick={toggleTheme}>
       {theme === "light" ? (
