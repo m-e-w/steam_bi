@@ -39,9 +39,7 @@ export default function Intro() {
           <div className="grid gap-1">
             <h3 className="text-lg font-bold">Connect with the Community</h3>
             <p className="text-sm text-muted-foreground">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam,
-              minus temporibus velit eligendi nobis ipsa. Qui, aperiam? Debitis,
-              voluptatibus laboriosam!
+						Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam, minus temporibus velit eligendi nobis ipsa. Qui, aperiam? Debitis, voluptatibus laboriosam!
             </p>
           </div>
         </div>
