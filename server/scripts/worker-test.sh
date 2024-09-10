@@ -6,4 +6,4 @@
 cd sbi-worker
 
 # Run our python tests
-~/.virtual_envs/steam_bi_dev/bin/python3 tests.py $1
+~/v_envs/steamset/bin/python3 tests.py $1

@@ -11,7 +11,7 @@ export default function Footer() {
         </p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link
-            href="https://github.com/thereeling"
+            href="https://github.com/m-e-w/steam_bi"
             target="_blank"
             prefetch={false}
           >

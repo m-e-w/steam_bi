@@ -10,10 +10,10 @@ export function Darkmode() {
 const {theme, toggleTheme} =  useTheme();
   return (
     <Button variant="outline" size="icon" onClick={toggleTheme}>
-      {theme === "light" ? (
-        <MoonIcon className="h-4 w-4" />
-      ) : (
+      {theme === "dark" ? (
         <SunIcon className="h-4 w-4" />
+      ) : (
+        <MoonIcon className="h-4 w-4" />
       )}
     </Button>
   );
