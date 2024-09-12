@@ -2,6 +2,9 @@
 import React, { useEffect } from "react";
 import { embedDashboard } from "@superset-ui/embedded-sdk";
 
+
+const supersetID = process.env.SUPERSET_EMBED_ID ?? "";
+
 export default function Dashboard() {
   const getToken = async () => {
     const response = await fetch("/guest-token");
@@ -12,7 +15,7 @@ export default function Dashboard() {
   useEffect(() => {
     const embed = async () => {
       await embedDashboard({
-        id: "7eaef3ea-f2b6-4710-a6ce-96acc927a01f", // given by the Superset embedding UI
+        id: supersetID, // given by the Superset embedding UI
         supersetDomain: "http://localhost:8088",
         mountPoint: document.getElementById("dashboard") as HTMLElement, // html element in which iframe render
         fetchGuestToken: () => getToken(),
