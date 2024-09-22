@@ -2,13 +2,14 @@
 import React, { useEffect } from "react";
 import { embedDashboard } from "@superset-ui/embedded-sdk";
 
-
 const supersetID = process.env.SUPERSET_EMBED_ID ?? "";
 
 export default function Dashboard() {
   const getToken = async () => {
-    const response = await fetch("/guest-token");
+    console.log("Fetching guest token...");
+    const response = await fetch("/api/guest-token");
     const token = await response.json();
+    console.log("Fetched token:", token);
     return token;
   };
 
@@ -21,17 +22,22 @@ export default function Dashboard() {
         fetchGuestToken: () => getToken(),
         dashboardUiConfig: {
           hideTitle: true,
+          filters: {
+            expanded: true,
+          },
           hideChartControls: true,
           hideTab: true,
         },
       });
     };
+
     if (document.getElementById("dashboard")) {
       embed();
     }
   }, []);
-  return <section>
-    <div id="dashboard" />
-  </section>;
-
+  return (
+    <section>
+      <div id="dashboard" />
+    </section>
+  );
 }

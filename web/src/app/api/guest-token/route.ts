@@ -1,8 +1,8 @@
-"use server";
+import { NextResponse } from "next/server";
 
 const supersetID = process.env.SUPERSET_EMBED_ID ?? "";
 
-export const fetchAccessToken = async (): Promise<string | undefined> => {
+const fetchAccessToken = async (): Promise<string | undefined> => {
   try {
     const body = {
       username: "admin",
@@ -22,20 +22,14 @@ export const fetchAccessToken = async (): Promise<string | undefined> => {
       }
     );
 
-    if (!response.ok) {
-      console.error("Failed to log in:", response.status, response.statusText);
-      return undefined;
-    }
-
     const jsonResponse = await response.json();
-    console.log("Access Token:", jsonResponse?.access_token); // for testing
     return jsonResponse?.access_token;
   } catch (error) {
     console.error(error);
   }
 };
 
-export const fetchGuestToken = async (): Promise<string | undefined> => {
+const fetchGuestToken = async (): Promise<string | undefined> => {
   const accessToken = await fetchAccessToken();
   try {
     const body = {
@@ -64,9 +58,13 @@ export const fetchGuestToken = async (): Promise<string | undefined> => {
       }
     );
     const jsonResponse = await response.json();
-    console.log("Guest Token:", jsonResponse?.token); // Log the guest token
     return jsonResponse?.token;
   } catch (error) {
     console.error(error);
   }
 };
+
+export async function GET() {
+  const token = await fetchGuestToken();
+  return NextResponse.json({ token });
+}
