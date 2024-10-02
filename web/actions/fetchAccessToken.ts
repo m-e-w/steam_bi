@@ -35,10 +35,47 @@ export const fetchAccessToken = async (): Promise<string | undefined> => {
   }
 };
 
-export const fetchGuestToken = async (): Promise<string | undefined> => {
+export const fetchCSRFToken = async (
+  accessToken: string | undefined
+): Promise<string | undefined> => {
+  try {
+    const response = await fetch(
+      "http://localhost:8088/api/v1/security/csrf_token",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error(
+        "Failed to GET CSRF Token:",
+        response.status,
+        response.statusText
+      );
+      return undefined;
+    }
+
+    const jsonResponse = await response.json();
+    console.log("CSRF Token:", jsonResponse?.result); // for testing
+    return jsonResponse?.result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getGuestToken = async (): Promise<string | undefined> => {
   const accessToken = await fetchAccessToken();
+  const csrfToken = await fetchCSRFToken(accessToken);
   try {
     const body = {
+      user: {
+        username: "guest",
+        first_name: "Guest",
+        last_name: "User",
+      },
       resources: [
         {
           type: "dashboard",
@@ -46,11 +83,6 @@ export const fetchGuestToken = async (): Promise<string | undefined> => {
         },
       ],
       rls: [],
-      user: {
-        username: "guest",
-        first_name: "Guest",
-        last_name: "User",
-      },
     };
     const response = await fetch(
       "http://localhost:8088/api/v1/security/guest_token",
@@ -60,11 +92,14 @@ export const fetchGuestToken = async (): Promise<string | undefined> => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
+          "X-CSRFToken": `${csrfToken}`,
         },
       }
     );
+    const responseText = await response.text();
     const jsonResponse = await response.json();
     console.log("Guest Token:", jsonResponse?.token); // Log the guest token
+    console.log("Full response:", responseText);
     return jsonResponse?.token;
   } catch (error) {
     console.error(error);
