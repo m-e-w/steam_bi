@@ -5,12 +5,11 @@ import React from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import { GamepadIcon, MenuIcon } from "lucide-react";
-import { Darkmode } from "./darkmode";
-
+import ThemeSwitch from "./theme-switch";
 export default function Header() {
   return (
     <motion.header
-      className="fixed top-0 z-50 w-full bg-background/80 backdrop-blur-sm border-b"
+      className="fixed top-0 z-50 w-full bg-background/80 backdrop-blur-sm border-muted border-b"
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
     >
@@ -26,7 +25,7 @@ export default function Header() {
         <nav>
           <ul className="text-muted-foreground hidden items-center gap-7 sm:flex">
             <li>
-              <Darkmode />
+              <ThemeSwitch />
             </li>
           </ul>
         </nav>

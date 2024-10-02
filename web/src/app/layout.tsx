@@ -3,8 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import ThemeContextProvider from "../../context/theme-context";
-
+import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -18,11 +17,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="!scroll-smooth">
-      <body className={`${inter.className}`}>
-        <ThemeContextProvider>
+    <html lang="en" className={`${inter.className}`} suppressHydrationWarning>
+      <body className={`bg-background dark:bg-background text-foreground dark:text-foreground !scroll-smooth`}>
+        <Providers>
           <Header /> {children} <Footer />
-        </ThemeContextProvider>
+        </Providers>
       </body>
     </html>
   );

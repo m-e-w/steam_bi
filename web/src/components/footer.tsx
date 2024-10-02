@@ -4,7 +4,7 @@ import { Github } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="fixed bottom-0 z-50 w-full bg-background/80 backdrop-blur-sm border-t">
+    <footer className="fixed bottom-0 z-50 w-full bg-background/80 backdrop-blur-sm border-muted border-t">
       <div className="container flex h-16 items-center justify-between md:px-6 border-opacity-40">
         <p className="text-xs text-muted-foreground">
           &copy; 2024 Matt Walls/Nick Giuliani
