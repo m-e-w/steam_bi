@@ -18,12 +18,24 @@ export default function ThemeSwitch() {
     );
   else
     return (
-      <Button variant="outline" size="icon">
+      <div>
         {resolvedTheme === "dark" ? (
-          <SunIcon className="h-4 w-4" onClick={() => setTheme("light")} />
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setTheme("light")}
+          >
+            <SunIcon className="h-4 w-4" />
+          </Button>
         ) : (
-          <MoonIcon className="h-4 w-4" onClick={() => setTheme("dark")} />
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setTheme("dark")}
+          >
+            <MoonIcon className="h-4 w-4" />
+          </Button>
         )}
-      </Button>
+      </div>
     );
 }

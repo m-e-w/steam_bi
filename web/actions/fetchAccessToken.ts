@@ -28,7 +28,6 @@ export const fetchAccessToken = async (): Promise<string | undefined> => {
     }
 
     const jsonResponse = await response.json();
-    console.log("Access Token:", jsonResponse?.access_token); // for testing
     return jsonResponse?.access_token;
   } catch (error) {
     console.error(error);
@@ -38,6 +37,12 @@ export const fetchAccessToken = async (): Promise<string | undefined> => {
 export const fetchCSRFToken = async (
   accessToken: string | undefined
 ): Promise<string | undefined> => {
+  console.log("Authorization Header:", `Bearer ${accessToken}`);
+  if (!accessToken) {
+    console.error("Access Token is missing, cannot proceed");
+    return undefined;
+  }
+
   try {
     const response = await fetch(
       "http://localhost:8088/api/v1/security/csrf_token",
@@ -46,6 +51,7 @@ export const fetchCSRFToken = async (
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+        credentials: "include",
       }
     );
 
@@ -59,7 +65,7 @@ export const fetchCSRFToken = async (
     }
 
     const jsonResponse = await response.json();
-    console.log("CSRF Token:", jsonResponse?.result); // for testing
+    console.log("CSRF Token:", jsonResponse?.result);
     return jsonResponse?.result;
   } catch (error) {
     console.error(error);
@@ -69,6 +75,12 @@ export const fetchCSRFToken = async (
 export const getGuestToken = async (): Promise<string | undefined> => {
   const accessToken = await fetchAccessToken();
   const csrfToken = await fetchCSRFToken(accessToken);
+
+  if (!accessToken || !csrfToken) {
+    console.error("Tokens are missing, cannot proceed");
+    return undefined;
+  }
+
   try {
     const body = {
       user: {
@@ -92,14 +104,20 @@ export const getGuestToken = async (): Promise<string | undefined> => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
-          "X-CSRFToken": `${csrfToken}`,
+          "X-CSRFToken": csrfToken,
         },
+        credentials: "include",
       }
     );
-    const responseText = await response.text();
+
+    if (!response.ok) {
+      const errorResponse = await response.text();
+      console.error("Failed to fetch guest token:", errorResponse);
+      return undefined;
+    }
+
     const jsonResponse = await response.json();
     console.log("Guest Token:", jsonResponse?.token); // Log the guest token
-    console.log("Full response:", responseText);
     return jsonResponse?.token;
   } catch (error) {
     console.error(error);
