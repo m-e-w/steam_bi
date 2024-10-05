@@ -1,8 +1,12 @@
 "use server";
 
 const supersetID = process.env.SUPERSET_EMBED_ID ?? "";
+type AccessTokenResponse = {
+  accessToken: string | undefined;
+  sessionCookie: string | null;
+};
 
-export const fetchAccessToken = async (): Promise<string | undefined> => {
+export const fetchAccessToken = async (): Promise<AccessTokenResponse> => {
   try {
     const body = {
       username: "admin",
@@ -19,27 +23,33 @@ export const fetchAccessToken = async (): Promise<string | undefined> => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
       }
     );
 
+    console.log("Response Headers:", [...response.headers.entries()]);
+    
     if (!response.ok) {
       console.error("Failed to log in:", response.status, response.statusText);
-      return undefined;
+      return { accessToken: undefined, sessionCookie: null };
     }
 
     const jsonResponse = await response.json();
-    return jsonResponse?.access_token;
+    const sessionCookie = response.headers.get("set-cookie");
+    return {
+      accessToken: jsonResponse?.access_token,
+      sessionCookie,
+    };
   } catch (error) {
     console.error(error);
+    return { accessToken: undefined, sessionCookie: null };
   }
 };
 
 export const fetchCSRFToken = async (
   accessToken: string | undefined
 ): Promise<string | undefined> => {
-  console.log("Authorization Header:", `Bearer ${accessToken}`);
   if (!accessToken) {
-    console.error("Access Token is missing, cannot proceed");
     return undefined;
   }
 
@@ -65,7 +75,6 @@ export const fetchCSRFToken = async (
     }
 
     const jsonResponse = await response.json();
-    console.log("CSRF Token:", jsonResponse?.result);
     return jsonResponse?.result;
   } catch (error) {
     console.error(error);
@@ -73,11 +82,14 @@ export const fetchCSRFToken = async (
 };
 
 export const getGuestToken = async (): Promise<string | undefined> => {
-  const accessToken = await fetchAccessToken();
+  const { accessToken, sessionCookie } = await fetchAccessToken();
   const csrfToken = await fetchCSRFToken(accessToken);
+  console.log(`Access Token:${accessToken}`);
+  console.log(`Session Cookie:${sessionCookie}`);
+  console.log(`CSRF Token:${csrfToken}`);
 
-  if (!accessToken || !csrfToken) {
-    console.error("Tokens are missing, cannot proceed");
+  if (!accessToken || !csrfToken || !sessionCookie) {
+    console.error("Tokens or Session Cookie are missing, cannot proceed");
     return undefined;
   }
 
@@ -105,6 +117,7 @@ export const getGuestToken = async (): Promise<string | undefined> => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
           "X-CSRFToken": csrfToken,
+          Cookie: sessionCookie,
         },
         credentials: "include",
       }
