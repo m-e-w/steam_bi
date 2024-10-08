@@ -2,7 +2,9 @@ import { getGuestToken } from "../../../actions/fetchAccessToken";
 import SupersetDashboardClient from "@/components/superset-dashboard-client";
 
 export default async function Dashboard() {
+  console.log("Calling getGuestToken()...");
   const token = await getGuestToken(); 
+  console.log("Guest Token", token);
   const supersetID = process.env.SUPERSET_EMBED_ID ?? ""; 
 
   if (!token) {

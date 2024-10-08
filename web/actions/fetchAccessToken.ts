@@ -1,12 +1,15 @@
 "use server";
 
-const supersetID = process.env.SUPERSET_EMBED_ID ?? "";
-type AccessTokenResponse = {
-  accessToken: string | undefined;
-  sessionCookie: string | null;
+import { cookies } from "next/headers";
+
+const supersetID = process.env.NEXT_PUBLIC_SUPERSET_EMBED_ID;
+
+type TCSRFTokenResponse = {
+  csrfToken: string | undefined;
+  sessionCookie: string | undefined;
 };
 
-export const fetchAccessToken = async (): Promise<AccessTokenResponse> => {
+export const fetchAccessToken = async (): Promise<string | undefined> => {
   try {
     const body = {
       username: "admin",
@@ -24,33 +27,31 @@ export const fetchAccessToken = async (): Promise<AccessTokenResponse> => {
           "Content-Type": "application/json",
         },
         credentials: "include",
+        cache: "no-store",
       }
     );
 
-    console.log("Response Headers:", [...response.headers.entries()]);
-    
     if (!response.ok) {
       console.error("Failed to log in:", response.status, response.statusText);
-      return { accessToken: undefined, sessionCookie: null };
+      return undefined;
     }
 
     const jsonResponse = await response.json();
-    const sessionCookie = response.headers.get("set-cookie");
-    return {
-      accessToken: jsonResponse?.access_token,
-      sessionCookie,
-    };
+
+    const accessToken = jsonResponse.access_token;
+
+    return accessToken;
   } catch (error) {
     console.error(error);
-    return { accessToken: undefined, sessionCookie: null };
+    return undefined;
   }
 };
 
 export const fetchCSRFToken = async (
   accessToken: string | undefined
-): Promise<string | undefined> => {
+): Promise<TCSRFTokenResponse> => {
   if (!accessToken) {
-    return undefined;
+    return { csrfToken: undefined, sessionCookie: undefined };
   }
 
   try {
@@ -71,22 +72,29 @@ export const fetchCSRFToken = async (
         response.status,
         response.statusText
       );
-      return undefined;
+      return { csrfToken: undefined, sessionCookie: undefined };
     }
 
     const jsonResponse = await response.json();
-    return jsonResponse?.result;
+    const sessionCookieArr = await response.headers.getSetCookie();
+    const sessionCookie = sessionCookieArr[0];
+    return {
+      csrfToken: jsonResponse?.result,
+      sessionCookie,
+    };
   } catch (error) {
     console.error(error);
+    return { csrfToken: undefined, sessionCookie: undefined };
   }
 };
 
 export const getGuestToken = async (): Promise<string | undefined> => {
-  const { accessToken, sessionCookie } = await fetchAccessToken();
-  const csrfToken = await fetchCSRFToken(accessToken);
-  console.log(`Access Token:${accessToken}`);
-  console.log(`Session Cookie:${sessionCookie}`);
-  console.log(`CSRF Token:${csrfToken}`);
+  const accessToken = await fetchAccessToken();
+  const { csrfToken, sessionCookie } = await fetchCSRFToken(accessToken);
+  console.log(`Access Token: ${accessToken}`);
+  console.log(`Session Cookie: ${sessionCookie}`);
+  console.log(`CSRF Token: ${csrfToken}`);
+  console.log(`Superset ID: ${supersetID}`);
 
   if (!accessToken || !csrfToken || !sessionCookie) {
     console.error("Tokens or Session Cookie are missing, cannot proceed");
@@ -108,6 +116,7 @@ export const getGuestToken = async (): Promise<string | undefined> => {
       ],
       rls: [],
     };
+
     const response = await fetch(
       "http://localhost:8088/api/v1/security/guest_token",
       {
@@ -130,7 +139,7 @@ export const getGuestToken = async (): Promise<string | undefined> => {
     }
 
     const jsonResponse = await response.json();
-    console.log("Guest Token:", jsonResponse?.token); // Log the guest token
+    console.log("Guest Token:", jsonResponse?.token); 
     return jsonResponse?.token;
   } catch (error) {
     console.error(error);
