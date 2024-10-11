@@ -1,4 +1,4 @@
-import { getGuestToken } from "../../../actions/fetchAccessToken";
+import { getGuestToken } from "../../actions/fetchAccessToken";
 import SupersetDashboardClient from "@/components/superset-dashboard-client";
 
 export default async function Dashboard() {

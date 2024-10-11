@@ -1,8 +1,7 @@
 "use server";
 
-import { cookies } from "next/headers";
 
-const supersetID = process.env.NEXT_PUBLIC_SUPERSET_EMBED_ID;
+const supersetID = process.env.SUPERSET_EMBED_ID;
 
 type TCSRFTokenResponse = {
   csrfToken: string | undefined;
